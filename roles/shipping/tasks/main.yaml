@@ -1,0 +1,38 @@
+- name: appsetup for catalogue by using import role
+  ansible.builtin.import_role:
+        name: common
+        tasks_from: user-appsetup.yaml
+
+- name: installing java dependencies
+  ansible.builtin.import_role:
+        name: common
+        tasks_from: java.yaml
+
+- name: systemsetup
+  ansible.builtin.import_role:
+     name: common
+     tasks_from: service-setup.yaml
+
+
+
+- name: Install required Python packages
+  ansible.builtin.pip:
+    executable: pip3.9
+    name: "{{ item }}"
+  loop:
+    - cryptography
+    - PyMySQL
+
+
+- name: import shipping data into mysql
+  community.mysql.mysql_db:
+      state: import
+      name: all
+      login_host: "{{ MYSQL }}"
+      login_user: "{{ USER }}"
+      login_password: "{{ PASSWORD }}"
+      target: "{{ item }}"
+  loop:
+    - /app/db/schema.sql
+    - /app/db/app-user.sql 
+    - /app/db/master-data.sql

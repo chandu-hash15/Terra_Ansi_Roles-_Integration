@@ -1,0 +1,15 @@
+- name: creating user and appsetup
+  ansible.builtin.import_role:
+    name: common
+    tasks_from: user-appsetup.yaml
+
+- name : disabling and enabling nodejs
+  ansible.builtin.import_role:
+    name: common
+    tasks_from: nodejs.yaml
+
+- name: stating and enabling cart service
+  ansible.builtin.import_role:
+    name: common
+    tasks_from: service-setup.yaml
+
